@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Spooky Carnival Audio Controls</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --bg-color: #1a1a1d;
+            --primary-color: #6f1d1b;
+            --secondary-color: #432818;
+            --accent-color: #bb9457;
+            --text-color: #e6e6e6;
+            --button-bg: #2c1a1d;
+            --button-hover: #4a1e26;
+            --button-active: #6f1d1b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cinzel', 'Times New Roman', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23432818' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(187, 148, 87, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(26, 26, 29, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--secondary-color);
+        }
+        
+        /* Audio Controls Section */
+        .control-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(44, 26, 29, 0.5);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+        
+        /* Button Styles */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            min-width: 120px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--text-color);
+            background-color: var(--button-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            background-color: var(--button-active);
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .btn:hover::after {
+            opacity: 1;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--accent-color);
+        }
+        
+        .btn-effect {
+            background-color: var(--secondary-color);
+            border-color: var(--primary-color);
+        }
+        
+        /* Audio Player Styles */
+        .audio-player {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(26, 26, 29, 0.7);
+            border-radius: 8px;
+            border: 1px solid var(--secondary-color);
+        }
+        
+        .audio-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+        
+        .volume-control {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .volume-control label {
+            min-width: 80px;
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--secondary-color);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Instructions Section */
+        .instructions-section {
+            margin-bottom: 30px;
+        }
+        
+        .instructions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+        }
+        
+        .instructions-header h2 {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            margin: 0;
+        }
+        
+        .instructions-toggle {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .instructions-content {
+            background-color: rgba(44, 26, 29, 0.5);
+            border: 1px solid var(--primary-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+            display: none;
+        }
+        
+        .instructions-content.show {
+            display: block;
+        }
+        
+        .instructions-content h3 {
+            color: var(--accent-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .instructions-content h3:first-child {
+            margin-top: 0;
+        }
+        
+        .instructions-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .instructions-content .tip {
+            background-color: rgba(111, 29, 27, 0.3);
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions-content .tip strong {
+            color: var(--accent-color);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .control-section {
+                padding: 15px;
+            }
+        }
+        
+        /* Active State Styles */
+        .btn.active {
+            background-color: var(--button-active);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>D&D Spooky Carnival</h1>
+            <p class="subtitle">Audio Control Panel</p>
+        </header>
+        
+        <main>
+            <!-- Instructions Section -->
+            <section class="instructions-section">
+                <div class="instructions-header" id="instructions-toggle">
+                    <h2>How to Use This Audio Panel</h2>
+                    <span class="instructions-toggle">+</span>
+                </div>
+                <div class="instructions-content" id="instructions-content">
+                    <h3>Getting Started</h3>
+                    <p>This audio control panel is designed to enhance your D&D Spooky Carnival campaign with immersive background music and sound effects. Here's how to use it:</p>
+                    
+                    <h3>Main Carnival Waltz</h3>
+                    <ul>
+                        <li><strong>Play/Pause/Stop:</strong> Basic controls for the main carnival waltz background music.</li>
+                        <li><strong>Double Tempo:</strong> Increases the speed of the music to create tension or represent a more frantic carnival atmosphere.</li>
+                        <li><strong>Volume Control:</strong> Adjust the volume of just the main track.</li>
+                    </ul>
+                    
+                    <div class="tip">
+                        <strong>DM Tip:</strong> Start the carnival waltz when players first enter the carnival grounds. The eerie waltz sets the mood for the entire area.
+                    </div>
+                    
+                    <h3>Special Effects</h3>
+                    <ul>
+                        <li><strong>Shattering Floor:</strong> A glass breaking sound effect for when the floor beneath players begins to crack or shatter.</li>
+                        <li><strong>Violent Crescendo:</strong> Gradually increases the volume to build tension during important moments or revelations.</li>
+                        <li><strong>Twisted Rhythm:</strong> A warping, alien-like sound effect for when reality begins to distort in the carnival.</li>
+                    </ul>
+                    
+                    <div class="tip">
+                        <strong>DM Tip:</strong> Use the "Shattering Floor" effect when players step onto unstable ground or when a glass illusion breaks. Use "Twisted Rhythm" when players encounter the carnival's true nature or when they're affected by mind-altering magic.
+                    </div>
+                    
+                    <h3>Master Controls</h3>
+                    <ul>
+                        <li><strong>Master Volume:</strong> Controls the overall volume of all audio elements.</li>
+                        <li><strong>Mute All:</strong> Quickly silence all audio (useful for important announcements or when you need players' full attention).</li>
+                        <li><strong>Reset All:</strong> Returns all controls to their default state and stops all audio.</li>
+                    </ul>
+                    
+                    <h3>Suggested Usage During Campaign</h3>
+                    <ol>
+                        <li>Begin with the main carnival waltz playing at a moderate volume as players explore.</li>
+                        <li>Use the "Double Tempo" feature when chase scenes occur or when tension rises.</li>
+                        <li>Trigger the "Shattering Floor" effect when players encounter the breaking mirror maze or crumbling pathways.</li>
+                        <li>Use "Violent Crescendo" during the build-up to the final confrontation with the carnival master.</li>
+                        <li>Play the "Twisted Rhythm" effect when reality warps or when players enter the distorted dimensions of the carnival.</li>
+                    </ol>
+                    
+                    <div class="tip">
+                        <strong>Technical Note:</strong> If audio doesn't play immediately, try clicking anywhere on the page first. Some browsers require user interaction before allowing audio playback.
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Main Music Controls Section -->
+            <section class="control-section">
+                <h2 class="section-title">Main Carnival Waltz</h2>
+                
+                <div class="audio-player">
+                    <span class="audio-label">Background Music</span>
+                    <!-- Audio element for main track -->
+                    <audio id="main-track" preload="auto">
+                        <source src="./audio/carnival-waltz.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    
+                    <!-- Volume control for main track -->
+                    <div class="volume-control">
+                        <label for="main-volume">Volume:</label>
+                        <input type="range" id="main-volume" min="0" max="1" step="0.1" value="0.7">
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button id="play-btn" class="btn btn-primary">Play</button>
+                    <button id="pause-btn" class="btn btn-primary">Pause</button>
+                    <button id="stop-btn" class="btn btn-primary">Stop</button>
+                    <button id="double-tempo-btn" class="btn btn-primary">Double Tempo</button>
+                </div>
+            </section>
+            
+            <!-- Sound Effects Section -->
+            <section class="control-section">
+                <h2 class="section-title">Carnival Effects</h2>
+                
+                <!-- Hidden audio elements for effects -->
+                <audio id="shattering-floor" preload="auto">
+                    <source src="./audio/effects/shattering-floor.mp3" type="audio/mpeg">
+                </audio>
+                
+                <audio id="twisted-rhythm" preload="auto">
+                    <source src="./audio/effects/twisted-rhythm.mp3" type="audio/mpeg">
+                </audio>
+                
+                <!-- Note: Violent Crescendo effect will be created using JavaScript audio manipulation -->
+                
+                <div class="btn-group">
+                    <button id="shattering-floor-btn" class="btn btn-effect">Shattering Floor</button>
+                    <button id="violent-crescendo-btn" class="btn btn-effect">Violent Crescendo</button>
+                    <button id="twisted-rhythm-btn" class="btn btn-effect">Twisted Rhythm</button>
+                </div>
+            </section>
+            
+            <!-- Master Controls Section -->
+            <section class="control-section">
+                <h2 class="section-title">Master Controls</h2>
+                
+                <div class="volume-control">
+                    <label for="master-volume">Master Volume:</label>
+                    <input type="range" id="master-volume" min="0" max="1" step="0.1" value="0.8">
+                </div>
+                
+                <div class="btn-group">
+                    <button id="mute-all-btn" class="btn">Mute All</button>
+                    <button id="reset-btn" class="btn">Reset All</button>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>D&D Campaign Audio Controls - Spooky Carnival Theme</p>
+            <!-- JavaScript will be added here in the next step -->
+            <script src="./js/audio-controls.js"></script>
+        </footer>
+    </div>
+    
+    <!-- Additional JavaScript for instructions toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const instructionsToggle = document.getElementById('instructions-toggle');
+            const instructionsContent = document.getElementById('instructions-content');
+            const toggleIcon = document.querySelector('.instructions-toggle');
+            
+            instructionsToggle.addEventListener('click', function() {
+                instructionsContent.classList.toggle('show');
+                toggleIcon.textContent = instructionsContent.classList.contains('show') ? '−' : '+';
+            });
+        });
+    </script>
+</body>
+</html>
